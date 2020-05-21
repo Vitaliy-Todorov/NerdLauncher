@@ -60,7 +60,8 @@ public class NerdLauncherFragment extends Fragment {
             ActivityInfo activityInfo = mResolveInfo.activityInfo;                              //ActivityInfo - Сведения, которые можно получить о конкретном приложении activity или receiver. Это соответствует собранной информации от AndroidManifest.xml-код <activity > и теги < receiver>.
 
             Intent intent = new Intent(Intent.ACTION_MAIN)
-                    .setClassName(activityInfo.applicationInfo.packageName, activityInfo.name);     //(смотри ст 471) мы получаем имя пакета и имя класса из метаданных и используем их для создания явной активности методом Intent
+                    .setClassName(activityInfo.applicationInfo.packageName, activityInfo.name)     //(смотри ст 471) мы получаем имя пакета и имя класса из метаданных и используем их для создания явной активности методом Intent
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);                                   //Флаг FLAG_ACTIVITY_NEW_TASK создает одну (и только одну) задачу на активность.
             /*applicationInfo - Информация, собранная из тега <application>
             *packageName - Название этого пакета. Из тега <manifest> " name" атрибут
             * */
