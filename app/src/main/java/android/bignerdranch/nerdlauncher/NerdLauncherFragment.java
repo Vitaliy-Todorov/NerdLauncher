@@ -4,11 +4,13 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -41,18 +43,22 @@ public class NerdLauncherFragment extends Fragment {
     private class ActivityHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private ResolveInfo mResolveInfo;
         private TextView mNameTextView;
+        private ImageView mProgramImageView;
 
         public ActivityHolder(View itemView) {
             super(itemView);
-            mNameTextView = (TextView) itemView;
+            itemView.setOnClickListener(this);
+            mNameTextView = itemView.findViewById(R.id.program_name);
+            mProgramImageView = itemView.findViewById(R.id.program_item);
         }
 
         public void bindActivity(ResolveInfo resolveInfo) {                                     //Я так понял выводит на экран текстовую метку переданного resolveInfo
             mResolveInfo = resolveInfo;
             PackageManager pm = getActivity().getPackageManager();
             String appName = mResolveInfo.loadLabel(pm).toString();
+            Drawable appItem = mResolveInfo.loadIcon(pm);
             mNameTextView.setText(appName);
-            mNameTextView.setOnClickListener(this);
+            mProgramImageView.setImageDrawable(appItem);
         }
 
         @Override
@@ -82,7 +88,7 @@ public class NerdLauncherFragment extends Fragment {
         @Override
         public ActivityHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
-            View view = layoutInflater.inflate(android.R.layout.simple_list_item_1, parent, false);
+            View view = layoutInflater.inflate(R.layout.item_program, parent, false);
             return new ActivityHolder(view);
         }
 
@@ -109,10 +115,10 @@ public class NerdLauncherFragment extends Fragment {
                         //PackageManager - класс для получения различных видов информации, связанной с пакетами приложений, которые в настоящее время установлены на устройстве.
         List<ResolveInfo> activities = pm.queryIntentActivities(startupIntent, 0);
                         ////queryIntentActivities - Получить все действия, которые могут быть выполнены для данного намерения
-        Collections.sort(activities, new Comparator<ResolveInfo>() {                            //В общем эта штука сравнивает текстовые метки разных ResolveInfo
+        Collections.sort(activities, new Comparator<ResolveInfo>() {                            //Сортирует activities в соответствии с методом compare (на выходе activities)
             @Override
             public int compare(ResolveInfo t1, ResolveInfo t2) {
-                PackageManager pm = getActivity().getPackageManager();
+                PackageManager pm = getActivity().getPackageManager();                          //В общем эта штука сравнивает текстовые метки разных ResolveInfo
                 return String.CASE_INSENSITIVE_ORDER.compare(
                         t1.loadLabel(pm).toString(),
                         t2.loadLabel(pm).toString()
